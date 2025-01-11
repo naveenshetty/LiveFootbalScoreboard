@@ -12,6 +12,13 @@ public class Scoreboard {
         this.matches = Collections.synchronizedList(new ArrayList<>());
     }
 
+    /**
+     * Start of the Match
+     * @param homeTeam Name of the home team.
+     * @param awayTeam Name of the away team.
+     * @throws IllegalArgumentException if the match is not found or scores are invalid.
+     */
+
     // Method to start a new match and add it to the list
     public void startMatch(String homeTeam, String awayTeam) {
 
@@ -29,6 +36,15 @@ public class Scoreboard {
         Match match = new Match(homeTeam, awayTeam);
         matches.add(match);
     }
+
+    /**
+     * Updates the score of an ongoing match.
+     * @param homeTeam Name of the home team.
+     * @param awayTeam Name of the away team.
+     * @param homeScore Score of the home team (must be non-negative).
+     * @param awayScore Score of the away team (must be non-negative).
+     * @throws IllegalArgumentException if the match is not found or scores are invalid.
+     */
 
     // Method to update scores of a specific match
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
@@ -55,6 +71,12 @@ public class Scoreboard {
         }
     }
 
+    /**
+     * Finish of the match
+     * @param homeTeam Name of the home team.
+     * @param awayTeam Name of the away team.
+     * @throws IllegalArgumentException if the match is not found or scores are invalid.
+     */
     // Method to finish a match and remove it from the list
     public void finishMatch(String homeTeam, String awayTeam) {
 
@@ -64,7 +86,7 @@ public class Scoreboard {
                 throw new IllegalArgumentException("Match not found.");
             }
         }catch (Exception e){
-            System.err.println("Error finishing match: " + e.getMessage());
+            //System.err.println("Error finishing match: " + e.getMessage());
             throw e;
         }
     }
