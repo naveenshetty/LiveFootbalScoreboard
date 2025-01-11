@@ -1,40 +1,71 @@
 package org.sportrader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Scoreboard {
-    private final List<Match> matches;
+     private final List<Match> matches;
 
-    // Constructor to initialize the matches list
+    // Constructor to initialize the matches list and also if the scoreboard is accessed concurrently, handled here
     public Scoreboard() {
-        this.matches = new ArrayList<>();
+        this.matches = Collections.synchronizedList(new ArrayList<>());
     }
 
     // Method to start a new match and add it to the list
     public void startMatch(String homeTeam, String awayTeam) {
+
+        if (homeTeam == null || homeTeam.isEmpty() || awayTeam == null || awayTeam.isEmpty()) {
+            throw new IllegalArgumentException("Team names cannot be null or empty.");
+        }
+        if (homeTeam.equals(awayTeam)) {
+            throw new IllegalArgumentException("A team cannot play against itself.");
+        }
+        for (Match match : matches) {
+            if (match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam)) {
+                throw new IllegalArgumentException("This match is already in progress.");
+            }
+        }
         Match match = new Match(homeTeam, awayTeam);
         matches.add(match);
     }
 
     // Method to update scores of a specific match
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
+        Match matchToUpdate = null;
+        for (Match match : matches) {
+            if (match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam)) {
+                matchToUpdate =match;
+                break;
+            }
+        }
+
+        if(matchToUpdate==null){
+            throw new IllegalArgumentException("Match not found.");
+        }
+
+        if (homeScore < 0 || awayScore < 0) {
+            throw new IllegalArgumentException("Scores cannot be negative.");
+        }
 
         try {
-            for (Match match : matches) {
-                if (match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam)) {
-                    match.setScores(homeScore, awayScore);
-                    return;
-                }
-            }
+            matchToUpdate.setScores(homeScore, awayScore);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Match not found.");
+            System.err.println("Error updating score: " + e.getMessage());
         }
     }
 
     // Method to finish a match and remove it from the list
     public void finishMatch(String homeTeam, String awayTeam) {
-        matches.removeIf(match -> match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam));
+
+        try {
+            boolean matchRemoved = matches.removeIf(match -> match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam));
+            if (!matchRemoved) {
+                throw new IllegalArgumentException("Match not found.");
+            }
+        }catch (Exception e){
+            System.err.println("Error finishing match: " + e.getMessage());
+        }
     }
 
     // Method to get summary of matches currently in progress
