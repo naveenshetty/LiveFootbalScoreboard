@@ -50,6 +50,17 @@ public class ScoreboardTest {
         scoreboard.startMatch("Spain", "Brazil");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public  void testStartMatchNull(){
+        scoreboard.startMatch(null,"Brazil");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public  void testStartMatchEmpty(){
+        scoreboard.startMatch("Argentina","");
+        scoreboard.startMatch("","");
+    }
+
 
     /*
         Positive scenario
@@ -74,6 +85,12 @@ public class ScoreboardTest {
         scoreboard.updateScore("NonExistentTeam", "AnotherOne", 1, 1);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateScoreForNegativeScroe() {
+        // Attempt to update negative score
+        scoreboard.updateScore("Argentina", "Brazil", -1, -2);
+        scoreboard.updateScore("Argentina", "Brazil", 1, -2);
+    }
     @Test
    public void testFinishMatch() {
         Scoreboard scoreboard = new Scoreboard();
@@ -83,6 +100,13 @@ public class ScoreboardTest {
         List<Match> matches = scoreboard.getMatches();
         assertTrue(matches.isEmpty());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFinishNonExistentMatch() {
+        // Attempt to finish match that doesn't exist
+        scoreboard.finishMatch("Spain", "Germany");
+    }
+
 
     @Test
     public void testGetSummary() {
