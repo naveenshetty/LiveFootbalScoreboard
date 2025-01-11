@@ -4,6 +4,8 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+
+        System.out.println("Live Football World Cup Scoreboard!");
         Scoreboard scoreboard = new Scoreboard();
 
         // Start some matches

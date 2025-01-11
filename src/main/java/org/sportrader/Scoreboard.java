@@ -19,13 +19,17 @@ public class Scoreboard {
 
     // Method to update scores of a specific match
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
-        for (Match match : matches) {
-            if (match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam)) {
-                match.setScores(homeScore, awayScore);
-                return;
+
+        try {
+            for (Match match : matches) {
+                if (match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam)) {
+                    match.setScores(homeScore, awayScore);
+                    return;
+                }
             }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Match not found.");
         }
-        throw new IllegalArgumentException("Match not found.");
     }
 
     // Method to finish a match and remove it from the list

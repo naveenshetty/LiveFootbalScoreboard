@@ -1,3 +1,4 @@
+import org.junit.Before;
 import org.sportrader.Match;
 import org.sportrader.Scoreboard;
 import org.junit.Test;
@@ -9,12 +10,19 @@ import static org.junit.Assert.assertTrue;
 
 public class ScoreboardTest {
 
+    private Scoreboard scoreboard;
 
+    @Before
+    public void setUp() {
+        scoreboard = new Scoreboard();
+    }
     //Test Case for startMatch: Test that starting a match add it to the scoreboard with a score 0-0
     @Test
     public void testStartMatch() {
 
-        Scoreboard scoreboard = new Scoreboard();
+        /*
+        Positive scenario
+         */
         scoreboard.startMatch("Argentina","Brazil");
 
         List<Match> matches = scoreboard.getMatches();
@@ -26,6 +34,26 @@ public class ScoreboardTest {
 
     }
 
+    /*
+       Negative scenarios
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testStartMatchWithSameTeamsThrowsException() {
+        //same teams can't play against themselves
+        scoreboard.startMatch("Brazil", "Brazil");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testStartMatchWhenAlreadyInProgressThrowsException() {
+        // Start a match and ensure duplicate start throws exception
+        scoreboard.startMatch("Spain", "Brazil");
+        scoreboard.startMatch("Spain", "Brazil");
+    }
+
+
+    /*
+        Positive scenario
+    */
     @Test
    public void testUpdateScore() {
         Scoreboard scoreboard = new Scoreboard();
@@ -35,6 +63,15 @@ public class ScoreboardTest {
         Match match = scoreboard.getMatches().get(0);
         assertEquals(3, match.getHomeScore());
         assertEquals(2, match.getAwayScore());
+    }
+
+    /*
+       Negative scenarios
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateScoreForNonExistentMatchThrowsException() {
+        // Attempt to update score for a match that doesn't exist
+        scoreboard.updateScore("NonExistentTeam", "AnotherOne", 1, 1);
     }
 
     @Test
@@ -63,5 +100,6 @@ public class ScoreboardTest {
         assertEquals("Argentina", summary.get(1).getHomeTeam());
         assertEquals("Australia", summary.get(1).getAwayTeam());
     }
+
 
 }
