@@ -1,4 +1,4 @@
-package org.example;
+package org.sportrader;
 
 import java.time.Instant;
 

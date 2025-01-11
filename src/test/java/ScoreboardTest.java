@@ -1,5 +1,5 @@
-import org.example.Match;
-import org.example.Scoreboard;
+import org.sportrader.Match;
+import org.sportrader.Scoreboard;
 import org.junit.Test;
 
 import java.util.List;
