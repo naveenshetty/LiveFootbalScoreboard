@@ -24,4 +24,43 @@ public class ScoreboardTest {
         assertEquals(0,matches.get(0).getAwayScore());
 
     }
+
+    @Test
+    void testUpdateScore() {
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startMatch("Argentina", "Brazil");
+        scoreboard.updateScore("Argentina", "Brazil", 3, 2);
+
+        Match match = scoreboard.getMatches().get(0);
+        assertEquals(3, match.getHomeScore());
+        assertEquals(2, match.getAwayScore());
+    }
+
+    @Test
+    void testFinishMatch() {
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startMatch("Argentina", "Brazil");
+        scoreboard.finishMatch("Argentina", "Brazil");
+
+        List<Match> matches = scoreboard.getMatches();
+        assertTrue(matches.isEmpty());
+    }
+
+    @Test
+    void testGetSummary() {
+        Scoreboard scoreboard = new Scoreboard();
+        scoreboard.startMatch("Argentina", "Australia");
+        scoreboard.startMatch("Spain", "Brazil");
+        scoreboard.startMatch("Germany", "France");
+        scoreboard.updateScore("Argentina", "Australia", 3, 1);
+        scoreboard.updateScore("Spain", "Brazil", 10, 2);
+        scoreboard.updateScore("Germany", "France", 2, 2);
+
+        List<Match> summary = scoreboard.getSummary();
+        assertEquals("Spain", summary.get(0).getHomeTeam());
+        assertEquals("Brazil", summary.get(0).getAwayTeam());
+        assertEquals("Argentina", summary.get(1).getHomeTeam());
+        assertEquals("Australia", summary.get(1).getAwayTeam());
+    }
+
 }
