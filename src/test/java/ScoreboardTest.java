@@ -125,5 +125,19 @@ public class ScoreboardTest {
         assertEquals("Australia", summary.get(1).getAwayTeam());
     }
 
+    @Test
+    public void testLargeNumberOfMatches() {
+        // Performance test case
+        for (int i = 0; i < 1000; i++) {
+            scoreboard.startMatch("HomeTeam" + i, "AwayTeam" + i);
+            scoreboard.updateScore("HomeTeam" + i, "AwayTeam" + i, i, i + 1);
+        }
+        assertEquals(1000, scoreboard.getSummary().size());
+        // Finish all matches to test removal efficiency
+        for (int i = 0; i < 1000; i++) {
+            scoreboard.finishMatch("HomeTeam" + i, "AwayTeam" + i);
+        }
+        assertEquals(0, scoreboard.getSummary().size());
+    }
 
 }

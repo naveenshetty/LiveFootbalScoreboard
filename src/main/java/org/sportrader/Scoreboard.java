@@ -5,7 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class Scoreboard {
-     private final List<Match> matches;
+
+    /*
+       If we Look up is more than expected,we should use Map instead of List for better performance. To Make it simple I have used List
+       There is no major difference when look up is less.
+     */
+    private final List<Match> matches;
 
     // Constructor to initialize the matches list and also if the scoreboard is accessed concurrently, handled here
     public Scoreboard() {
@@ -22,19 +27,31 @@ public class Scoreboard {
     // Method to start a new match and add it to the list
     public void startMatch(String homeTeam, String awayTeam) {
 
+        validateTeamNames(homeTeam, awayTeam);
+        checkDuplicateMatch(homeTeam, awayTeam);
+
+        Match match = new Match(homeTeam, awayTeam);
+        matches.add(match);
+    }
+
+    // Helper method to validate team names
+    private void validateTeamNames(String homeTeam, String awayTeam) {
         if (homeTeam == null || homeTeam.isEmpty() || awayTeam == null || awayTeam.isEmpty()) {
             throw new IllegalArgumentException("Team names cannot be null or empty.");
         }
         if (homeTeam.equals(awayTeam)) {
             throw new IllegalArgumentException("A team cannot play against itself.");
         }
-        for (Match match : matches) {
-            if (match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam)) {
-                throw new IllegalArgumentException("This match is already in progress.");
-            }
+    }
+
+    // Helper method to check for duplicate matches
+    private void checkDuplicateMatch(String homeTeam, String awayTeam) {
+        boolean matchExists = matches.stream()
+                .anyMatch(match -> match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam));
+
+        if (matchExists) {
+            throw new IllegalArgumentException("This match is already in progress.");
         }
-        Match match = new Match(homeTeam, awayTeam);
-        matches.add(match);
     }
 
     /**
@@ -48,26 +65,25 @@ public class Scoreboard {
 
     // Method to update scores of a specific match
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
-        Match matchToUpdate = null;
-        for (Match match : matches) {
-            if (match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam)) {
-                matchToUpdate =match;
-                break;
-            }
-        }
+       //Validate input scores
+        validateScores(homeScore, awayScore);
 
-        if(matchToUpdate==null){
-            throw new IllegalArgumentException("Match not found.");
-        }
+        // Find the match to update
+        Match matchToUpdate = matches.stream()
+                .filter(match -> match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Match not found: " + homeTeam + " vs " + awayTeam));
 
+        // Update the scores
+        matchToUpdate.setScores(homeScore, awayScore);
+    }
+
+    // Helper method to validate scores
+    private void validateScores(int homeScore, int awayScore) {
         if (homeScore < 0 || awayScore < 0) {
-            throw new IllegalArgumentException("Scores cannot be negative.");
-        }
-
-        try {
-            matchToUpdate.setScores(homeScore, awayScore);
-        } catch (Exception e) {
-            System.err.println("Error updating score: " + e.getMessage());
+            throw new IllegalArgumentException("Scores must be non-negative. Received: "
+                    + "homeScore=" + homeScore + ", awayScore=" + awayScore);
         }
     }
 
@@ -106,6 +122,6 @@ public class Scoreboard {
     }
 
     public List<Match> getMatches() {
-        return new ArrayList<>(matches); // Return a copy for immutability.
+        return Collections.unmodifiableList(matches); // tried improving immutability
     }
 }
