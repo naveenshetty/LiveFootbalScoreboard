@@ -65,6 +65,7 @@ public class Scoreboard {
             }
         }catch (Exception e){
             System.err.println("Error finishing match: " + e.getMessage());
+            throw e;
         }
     }
 
