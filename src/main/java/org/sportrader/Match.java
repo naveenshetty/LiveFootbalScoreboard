@@ -8,15 +8,13 @@ public class Match {
     private int homeScore;
     private int awayScore;
     private long startTime;
-    private int startOrder; // New field to track the order of addition
-
+    private int startOrder;
 
     public Match(String homeTeam, String awayTeam, int startOrder) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.homeScore = 0;
         this.awayScore = 0;
-        //this.startTime = System.currentTimeMillis();
         this.startOrder = startOrder;
 
     }
@@ -36,10 +34,6 @@ public class Match {
     public int getAwayScore() {
         return awayScore;
     }
-
-   /* public long getStartTime() {
-        return startTime;
-    }*/
 
     public int getStartOrder() {
         return startOrder;
