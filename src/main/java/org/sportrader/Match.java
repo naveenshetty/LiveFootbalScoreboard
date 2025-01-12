@@ -7,14 +7,18 @@ public class Match {
     private final String awayTeam;
     private int homeScore;
     private int awayScore;
-    private final long startTime;
+    private long startTime;
+    private int startOrder; // New field to track the order of addition
 
-    public Match(String homeTeam, String awayTeam) {
+
+    public Match(String homeTeam, String awayTeam, int startOrder) {
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.homeScore = 0;
         this.awayScore = 0;
-        this.startTime = Instant.now().toEpochMilli();
+        //this.startTime = System.currentTimeMillis();
+        this.startOrder = startOrder;
+
     }
 
     public String getHomeTeam() {
@@ -35,6 +39,10 @@ public class Match {
 
     public long getStartTime() {
         return startTime;
+    }
+
+    public int getStartOrder() {
+        return startOrder;
     }
 
     public void setScores(int homeScore, int awayScore) {

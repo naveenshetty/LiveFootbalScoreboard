@@ -11,6 +11,7 @@ public class Scoreboard {
        There is no major difference when look up is less.
      */
     private final List<Match> matches;
+    private int matchCounter = 0; // Global counter for start order
 
     // Constructor to initialize the matches list and also if the scoreboard is accessed concurrently, handled here
     public Scoreboard() {
@@ -30,7 +31,8 @@ public class Scoreboard {
         validateTeamNames(homeTeam, awayTeam);
         checkDuplicateMatch(homeTeam, awayTeam);
 
-        Match match = new Match(homeTeam, awayTeam);
+        matchCounter++; //Increment the match counter for the start order
+        Match match = new Match(homeTeam, awayTeam, matchCounter);
         matches.add(match);
     }
 
@@ -115,7 +117,9 @@ public class Scoreboard {
             if (scoreComparison != 0) {
                 return scoreComparison;
             } else {
-                return Long.compare(m2.getStartTime(), m1.getStartTime());
+                //return Long.compare(m2.getStartTime(), m1.getStartTime());
+                // If total scores are the same, compare startOrder (descending order)
+                return Integer.compare(m2.getStartOrder(), m1.getStartOrder());
             }
         });
         return matches;

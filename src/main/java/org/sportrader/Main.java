@@ -25,7 +25,7 @@ public class Main {
         // Get and print the summary of ongoing matches
         List<Match> summary = scoreboard.getSummary();
         for (Match match : summary) {
-            System.out.println(match.getHomeTeam() + " " + match.getHomeScore() + " - " + match.getAwayScore() + " " + match.getAwayTeam());
+            System.out.println(match.getHomeTeam() + " " + match.getHomeScore() + " - " + match.getAwayTeam() + " " + match.getAwayScore());
         }
     }
 }
