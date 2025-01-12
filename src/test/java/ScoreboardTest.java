@@ -1,4 +1,7 @@
 import org.junit.Before;
+import org.sportrader.Exception.FinishedMatchException;
+import org.sportrader.Exception.InvalidTeamNameException;
+import org.sportrader.Exception.MatchNotFoundException;
 import org.sportrader.Match;
 import org.sportrader.Scoreboard;
 import org.junit.Test;
@@ -37,30 +40,41 @@ public class ScoreboardTest {
     /*
        Negative scenarios
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = InvalidTeamNameException.class)
     public void testStartMatchWithSameTeamsThrowsException() {
         //same teams can't play against themselves
         scoreboard.startMatch("Brazil", "Brazil");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = MatchNotFoundException.class)
     public void testStartMatchWhenAlreadyInProgressThrowsException() {
         // Start a match and ensure duplicate start throws exception
         scoreboard.startMatch("Spain", "Brazil");
         scoreboard.startMatch("Spain", "Brazil");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = InvalidTeamNameException.class)
     public  void testStartMatchNull(){
         scoreboard.startMatch(null,"Brazil");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = InvalidTeamNameException.class)
     public  void testStartMatchEmpty(){
         scoreboard.startMatch("Argentina","");
         scoreboard.startMatch("","");
     }
 
+    @Test(expected = MatchNotFoundException.class)
+    public void testStartMatchWithReversedTeamsThrowsException() {
+        scoreboard.startMatch("Mexico", "Canada");
+        scoreboard.startMatch("Canada", "Mexico");
+    }
+
+    @Test(expected = MatchNotFoundException.class)
+    public void testStartMatchWithCaseInsensitiveTeamsThrowsException() {
+        scoreboard.startMatch("Mexico", "Canada");
+        scoreboard.startMatch("mexico", "Canada");  // This should throw an exception
+    }
 
     /*
         Positive scenario
@@ -79,9 +93,9 @@ public class ScoreboardTest {
     /*
        Negative scenarios
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = FinishedMatchException.class)
     public void testUpdateScoreForNonExistentMatchThrowsException() {
-        // Attempt to update score for a match that doesn't exist
+        // Attempt to update score for a match that doesn't exist or trying to update for the finished match
         scoreboard.updateScore("NonExistentTeam", "AnotherOne", 1, 1);
     }
 
@@ -101,10 +115,17 @@ public class ScoreboardTest {
         assertTrue(matches.isEmpty());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = MatchNotFoundException.class)
     public void testFinishNonExistentMatch() {
         // Attempt to finish match that doesn't exist
         scoreboard.finishMatch("Spain", "Germany");
+    }
+
+    @Test(expected = FinishedMatchException.class)
+    public void testUpdateScoreForFinishedMatchThrowsException() {
+        scoreboard.startMatch("Argentina", "Brazil");
+        scoreboard.finishMatch("Argentina", "Brazil");  // Finish the match
+        scoreboard.updateScore("Argentina", "Brazil", 3, 2);
     }
 
 

@@ -1,5 +1,9 @@
 package org.sportrader;
 
+import org.sportrader.Exception.FinishedMatchException;
+import org.sportrader.Exception.InvalidTeamNameException;
+import org.sportrader.Exception.MatchNotFoundException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,20 +43,22 @@ public class Scoreboard {
     // Helper method to validate team names
     private void validateTeamNames(String homeTeam, String awayTeam) {
         if (homeTeam == null || homeTeam.isEmpty() || awayTeam == null || awayTeam.isEmpty()) {
-            throw new IllegalArgumentException("Team names cannot be null or empty.");
+            throw new InvalidTeamNameException("Team names cannot be null or empty.");
         }
         if (homeTeam.equals(awayTeam)) {
-            throw new IllegalArgumentException("A team cannot play against itself.");
+            throw new InvalidTeamNameException("A team cannot play against itself.");
         }
     }
 
     // Helper method to check for duplicate matches
     private void checkDuplicateMatch(String homeTeam, String awayTeam) {
         boolean matchExists = matches.stream()
-                .anyMatch(match -> match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam));
-
+                .anyMatch(match ->
+                        (match.getHomeTeam().equalsIgnoreCase(homeTeam) && match.getAwayTeam().equalsIgnoreCase(awayTeam)) ||
+                                (match.getHomeTeam().equalsIgnoreCase(awayTeam) && match.getAwayTeam().equalsIgnoreCase(homeTeam))
+                );
         if (matchExists) {
-            throw new IllegalArgumentException("This match is already in progress.");
+            throw new MatchNotFoundException("This match is already in progress.");
         }
     }
 
@@ -74,8 +80,8 @@ public class Scoreboard {
         Match matchToUpdate = matches.stream()
                 .filter(match -> match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Match not found: " + homeTeam + " vs " + awayTeam));
+                .orElseThrow(() -> new FinishedMatchException(
+                        "Match not found/Match already finished: " + homeTeam + " vs " + awayTeam));
 
         // Update the scores
         matchToUpdate.setScores(homeScore, awayScore);
@@ -101,7 +107,7 @@ public class Scoreboard {
         try {
             boolean matchRemoved = matches.removeIf(match -> match.getHomeTeam().equals(homeTeam) && match.getAwayTeam().equals(awayTeam));
             if (!matchRemoved) {
-                throw new IllegalArgumentException("Match not found.");
+                throw new MatchNotFoundException("Match not found.");
             }
         }catch (Exception e){
             //System.err.println("Error finishing match: " + e.getMessage());
