@@ -118,7 +118,7 @@ public class Scoreboard {
                 return scoreComparison;
             } else {
                 //return Long.compare(m2.getStartTime(), m1.getStartTime());
-                // If total scores are the same, compare startOrder (descending order)
+                // If total scores are the same, compare startOrder (descending order, most recently started first)
                 return Integer.compare(m2.getStartOrder(), m1.getStartOrder());
             }
         });

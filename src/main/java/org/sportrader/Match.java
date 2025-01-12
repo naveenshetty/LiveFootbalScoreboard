@@ -37,9 +37,9 @@ public class Match {
         return awayScore;
     }
 
-    public long getStartTime() {
+   /* public long getStartTime() {
         return startTime;
-    }
+    }*/
 
     public int getStartOrder() {
         return startOrder;
