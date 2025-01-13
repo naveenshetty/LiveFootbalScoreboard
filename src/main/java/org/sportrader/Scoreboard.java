@@ -1,8 +1,8 @@
 package org.sportrader;
 
-import org.sportrader.Exception.FinishedMatchException;
-import org.sportrader.Exception.InvalidTeamNameException;
-import org.sportrader.Exception.MatchNotFoundException;
+import org.sportrader.exception.FinishedMatchException;
+import org.sportrader.exception.InvalidTeamNameException;
+import org.sportrader.exception.MatchNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collections;

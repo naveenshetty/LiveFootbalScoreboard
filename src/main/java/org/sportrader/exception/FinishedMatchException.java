@@ -1,4 +1,4 @@
-package org.sportrader.Exception;
+package org.sportrader.exception;
 
 public class FinishedMatchException extends RuntimeException{
 

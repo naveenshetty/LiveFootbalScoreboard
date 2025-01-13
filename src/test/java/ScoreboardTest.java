@@ -1,7 +1,7 @@
 import org.junit.Before;
-import org.sportrader.Exception.FinishedMatchException;
-import org.sportrader.Exception.InvalidTeamNameException;
-import org.sportrader.Exception.MatchNotFoundException;
+import org.sportrader.exception.FinishedMatchException;
+import org.sportrader.exception.InvalidTeamNameException;
+import org.sportrader.exception.MatchNotFoundException;
 import org.sportrader.Match;
 import org.sportrader.Scoreboard;
 import org.junit.Test;
